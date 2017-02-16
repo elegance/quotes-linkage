@@ -10,7 +10,7 @@ var stocksInfo = {
 
 // 连接到简要行情的socket
 socket.of('/simpleStocks').on('connection', function(client) {
-    console.log('connected...')
+    console.log('connected...');
     client.subCodes = [];
 
     // 
@@ -20,24 +20,36 @@ socket.of('/simpleStocks').on('connection', function(client) {
 	 */
     client.on('subscribe', function(msg) {
         console.log(msg);
-        var msgPair = msg.split(':'),
-            reqId = msgPair[0],
-            codesStr = msgPair[1];
+        let {codes, reqId} = analysisSubsMsg(msg);
 
-        client.subCodes = _(codesStr.split(',')).compact().uniq().value(); //按逗号分隔、去重记录客户端需要的代码
+        client.subCodes = codes;
         returnSimpleQuotes(client.subCodes, reqId); 
     });
 
     // 客户端追加订阅指定的股票，追加多个股票用“,”逗号分隔
     client.on('appendSubscribe', function(msg) {
-        var msgPair = msg.split(':'),
-            reqId = msgPair[0],
-            codesStr = msgPair[1],
-            newSubCodes = _(codesStr.split(',')).compact().uniq().value();
-
-        client.subCodes = _(client.subCodes).union(newSubCodes).value();
-        returnSimpleQuotes(newSubCodes, reqId); //返回新订阅的行情
+        let {codes, reqId} = analysisSubsMsg(msg);
+        client.subCodes = _(client.subCodes).union(codes).value();
+        returnSimpleQuotes(codes, reqId); //返回新订阅的行情
     });
+
+    function analysisSubsMsg(msg) {
+        var reqId, codes, msgPair, codesStr;
+        if (!msg || !msg.trim()) {
+            codes = [];
+        } else if (msg.indexOf(':') > -1) {
+            msgPair = msg.split(':');
+            reqId = msgPair[0];
+            codesStr = msgPair[1];
+            codes = _(codesStr.split(',')).compact().uniq().value();
+        } else {
+            codes = _(msg.split(',')).compact().uniq().value();
+        }
+        return {
+            reqId,
+            codes
+        };
+    }
 
     function returnSimpleQuotes(codes, reqId) {
         var retMsg = reqId ? (reqId + ':') : '';
@@ -83,6 +95,18 @@ var socketServer = {
     // 更新股票代码价格
     pushQuote: function(code, price) {
         stocksInfo.simpleQuotes[code] = price;
+
+        var clients = socket.nsps['/simpleStocks'].clients().connected;
+
+        if (Object.keys(clients).length > 0) {
+            setTimeout(() => {
+                for (var sid in clients) {
+                    if (clients[sid].subCodes.indexOf(code) > -1) {
+                        clients[sid].emit('message', code + ',' + price);
+                    }
+                }
+            });
+        }
     },
 
     // socket.io 依赖的http server
@@ -91,7 +115,7 @@ var socketServer = {
     },
 
     // 根据代码获取价格
-    gtCodePrice: function(code) {
+    gt: function(code) {
         return stocksInfo.simpleQuotes[code];
     }
 };

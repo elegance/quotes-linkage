@@ -1,4 +1,4 @@
-var stockData = {
+module.exports = {
     "000001.SZ": "平安银行",
     "000002.SZ": "万科Ａ",
     "000004.SZ": "国农科技",
@@ -3840,5 +3840,3 @@ var stockData = {
     "999998.SH": "Ａ股指数",
     "999999.SH": "上证指数"
 };
-
-exports.stockData = stockData;
