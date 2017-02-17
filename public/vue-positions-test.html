@@ -51,9 +51,6 @@
                         开仓时间
                     </td>
                     <td class="tc">
-                        用户ID
-                    </td>
-                    <td class="tc">
                         资金账户
                     </td>
                     <td class="tc">
@@ -66,16 +63,7 @@
                         股票数量
                     </td>
                     <td class="tr">
-                        可卖数量
-                    </td>
-                    <td class="tr">
                         成本价
-                    </td>
-                    <td class="tr">
-                        卖出价
-                    </td>
-                    <td class="tr">
-                        卖出数量
                     </td>
                     <td class="tr">
                         当前价
@@ -86,14 +74,8 @@
                     <td class="tr">
                         持仓盈亏
                     </td>
-                    <td class="tr">
-                        平仓盈亏
-                    </td>
                     <td class="tr prs">
                         盈亏比
-                    </td>
-                    <td class="tc">
-                        锁定
                     </td>
                     <td class="tc">
                         操作
@@ -108,10 +90,6 @@
                     <!--开仓时间-->
                     <td class="tc">
                         {{item.createtime}}
-                    </td>
-                    <!--用户ID-->
-                    <td class="tc">
-                        {{item.userid}}
                     </td>
                     <!--资金账户-->
                     <td class="tc">
@@ -129,21 +107,9 @@
                     <td class="tr">
                         {{item.position}}
                     </td>
-                    <!--可卖数量-->
-                    <td class="tr">
-                        {{item.ysdposition}}
-                    </td>
                     <!--成本价-->
                     <td class="tr">
                         {{item.openprice}}
-                    </td>
-                    <!--卖出价-->
-                    <td class="tr">
-                        {{item.sellprice}}
-                    </td>
-                    <!--卖出数量-->
-                    <td class="tr">
-                        {{item.sellqty}}
                     </td>
                     <!--当前价-->
                     <td class="tr">
@@ -157,17 +123,9 @@
                     <td class="tr">
                         computed 盈亏
                     </td>
-                    <!--平仓盈亏-->
-                    <td class="tr">
-                        {{item.closeprofit}}
-                    </td>
                     <!--盈亏比-->
                     <td class="tr">
                         computed 盈亏比
-                    </td>
-                    <!-- 锁定 -->
-                    <td class="tc cur">
-                        <i name="lockHold"></i>
                     </td>
                     <!--平仓-->
                     <td>
@@ -179,8 +137,7 @@
             </tbody>
         </table>
     </div>
-    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
-    <script src="vue-position.js"></script>
+    <script data-main="/javascripts/vue-position" src="https://cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
 </body>
 
 </html>

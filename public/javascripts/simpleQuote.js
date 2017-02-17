@@ -1,11 +1,5 @@
-(function(global) {
+define(['socket.io', 'lodash'], function(io, _) {
     var socket = io.connect('/simpleStocks');
-
-    global.simpleQuote = new SimpleQuote();
-    socket.on('message', global.simpleQuote.onMessage);
-    socket.on('batchMessage', global.simpleQuote.onBatchMessage);
-
-    function noop() {}
 
     function SimpleQuote() {
         var that = this;
@@ -13,42 +7,53 @@
         that.refs = {}; // 代码 以及其依赖计数: {600361: 1, 600362: 4}
         that.quotesInfo = {}; // 所有股票价格信息: {600361: 12.51, 600362: 5.25}
 
-        function NspInfo(nspName, codes, onNewQuote, quoteDeferred) {
-            this.nspName = nspName; // 订阅行情的命名空间（多个模块共用一个socket通道订阅行情）
-            this.codes = codes; // 当前命名空间订阅的股票代码
+        function NspInfo(nspName, onNewQuote, quoteDeferred) {
+            this.nspName = nspName; // 订阅行情的命名空间
+            this.codes = []; // 当前命名空间订阅的股票代码
             this.onNewQuote = onNewQuote; // 新行情push过来触发的回调
             this.quoteDeferred = quoteDeferred; // 当前订阅的所有的代码都已经ready
         }
 
-        // 同一个namespace 只订阅一组股票代码
-        this.subcribe = function(nsp, codes, onNewQuote) {
-            var dfd = {};
-            var promise = new Promise((resolve, reject) => dfd = {resolve, reject});
+        /**
+         * 多个模块共用一个socket通道订阅行情
+         * 
+         * 有缓存和回收功能:
+         * 新增订阅的代码已存在时，不会发出新的订阅，直接依赖现有的推送
+         * 某个代码依赖为0时，程序退订该代码，以节省推送流量
+         * 
+         */
+        this.subscribe = function(nsp, codes, onNewQuote) {
+            codes = _(codes).uniq().value(); // 去重
 
-            var codes = _(codes).uniq().value(),
-                newSubs = [], // 该命名空间新订阅的代码（命名空间在翻页时被重复利用）
-                unSubs = [], // 该命名空间取消订阅的代码（命名空间在翻页时被重复利用）
+            var dfd = {},
+                promise = new Promise((resolve, reject) => dfd = {
+                    resolve,
+                    reject
+                }),
                 needSubs = [], // 通道需要新订阅的代码 
                 needUnsubs = [], // 通道需要减少订阅的代码（节省通信流量，不再推送不订阅的代码）
-                nspInfo = that.nsps[nsp] || new NspInfo(nsp, codes, onNewQuote, dfd);
+                nspLastDepCodes = [], // 本nsp最后依赖的那些股票代码
+                nspInfo = new NspInfo(nsp, onNewQuote, dfd);
+            
+            if (that.nsps[nsp]) {
+                nspLastDepCodes = that.nsps[nsp].codes;
+            }
 
-            newSubs = _(codes).difference(nspInfo.codes).value();
-            unSubs = _(nspInfo.codes).difference(codes).value();
+            var newSubs = _(codes).difference(nspLastDepCodes).value();// 该命名空间新订阅的代码（命名空间在翻页时被重复利用）
+            var unSubs = _(nspLastDepCodes).difference(codes).value();// 该命名空间取消订阅的代码（命名空间在翻页时被重复利用）
             nspInfo.codes = codes;
-            nspInfo.onNewQuote = onNewQuote;
-            nspInfo.quoteDeferred = dfd;
             that.nsps[nsp] = nspInfo;
 
-            newSubs.forEach(function(code) {
+            newSubs.forEach(function(code) { // 更新全局计数，递减代码依赖数值，如果是新值，则需要新订阅，否则则不会发出订阅请求
                 that.refs[code] = (that.refs[code] || (needSubs.push(code) && 0)) + 1;
             });
 
-            unSubs.forEach(function(code) {
+            unSubs.forEach(function(code) { // 更新全局计数，递减代码依赖数值，如果值变为0，则需要退订，否则则不会发出退订请求
                 that.refs[code] = (that.refs[code] > 1) ? (that.refs[code] - 1) : (needUnsubs.push(code) && 0);
             });
 
             if (needSubs.length > 0) {
-                socket.emit('appendMessage', nsp + ':' + needSubs.join(','));
+                socket.emit('appendSubscribe', nsp + ':' + needSubs.join(','));
             } else {
                 setTimeout(function() {
                     dfd.resolve(gt); //没有新订阅的股票，直接resolve
@@ -99,4 +104,9 @@
             }
         };
     }
-})(window);
+
+    var simpleQuote = new SimpleQuote();
+    socket.on('message', simpleQuote.onMessage);
+    socket.on('batchMessage', simpleQuote.onBatchMessage);
+    return simpleQuote;
+});

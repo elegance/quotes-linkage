@@ -1,0 +1,94 @@
+{
+  "data": [
+    {
+      "accountid": "110011",
+      "code": "000521",
+      "createtime": "2017-02-10 13:29:03",
+      "id": 168155,
+      "market": "SZ",
+      "openprice": 7,
+      "position": 500
+    },
+    {
+      "accountid": "110011",
+      "code": "603519",
+      "createtime": "2017-02-10 13:29:03",
+      "id": 168154,
+      "market": "SH",
+      "openprice": 30.07,
+      "position": 100
+    },
+    {
+      "accountid": "110011",
+      "code": "002403",
+      "createtime": "2017-02-10 13:29:03",
+      "id": 168153,
+      "market": "SZ",
+      "openprice": 14.17,
+      "position": 200
+    },
+    {
+      "accountid": "110011",
+      "code": "002473",
+      "createtime": "2017-02-10 13:29:03",
+      "id": 168152,
+      "market": "SZ",
+      "openprice": 26.94,
+      "position": 0
+    },
+    {
+      "accountid": "110011",
+      "code": "600060",
+      "createtime": "2017-02-10 13:29:03",
+      "id": 168151,
+      "market": "SH",
+      "openprice": 17.75,
+      "position": 100
+    },
+    {
+      "accountid": "110011",
+      "code": "002677",
+      "createtime": "2017-02-10 13:29:03",
+      "id": 168150,
+      "market": "SZ",
+      "openprice": 12.13,
+      "position": 0
+    },
+    {
+      "accountid": "110011",
+      "code": "000921",
+      "createtime": "2017-02-10 13:26:15",
+      "id": 168149,
+      "market": "SZ",
+      "openprice": 11.44,
+      "position": 300
+    },
+    {
+      "accountid": "110011",
+      "code": "000800",
+      "createtime": "2017-02-10 13:25:57",
+      "id": 168148,
+      "market": "SZ",
+      "openprice": 11.37,
+      "position": 200
+    },
+    {
+      "accountid": "110011",
+      "code": "000951",
+      "createtime": "2017-02-10 13:25:57",
+      "id": 168147,
+      "market": "SZ",
+      "openprice": 15.99,
+      "position": 200
+    },
+    {
+      "accountid": "110011",
+      "code": "000757",
+      "createtime": "2017-02-10 13:25:57",
+      "id": 168146,
+      "market": "SZ",
+      "openprice": 10.31,
+      "position": 300
+    }
+  ]
+}
