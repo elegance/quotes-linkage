@@ -10,29 +10,38 @@ var stocksInfo = {
 
 // 连接到简要行情的socket
 socket.of('/simpleStocks').on('connection', function(client) {
-    console.log('connected...');
+    console.log('connected /simpleStocks, current connections: ', getNspConnectedLength('/simpleStocks'));
     client.subCodes = [];
 
-    // 
+    client.on('disconnect', function() {
+        console.log('disconnect /simpleStocks, current connections: ', getNspConnectedLength('/simpleStocks'));
+	});
+
     /**
-     * 接受客户端订阅指定股票，多个股票用“,”逗号分隔
-	 * @param msg 结构：请求ID:股票代码1,股票代码2 如：requestId:600361.SH,000380.SZ
+     * 接受客户端订阅指定股票,多个股票用“,”号分隔
+     * 参考结构：[requestId:]600361.SH[,600362.SH]
+     * 方括号内代表非必填，请求msg带有”requestId“时，将会在首次batchMessage中连同一起返回
 	 */
     client.on('subscribe', function(msg) {
-        console.log(msg);
         let {codes, reqId} = analysisSubsMsg(msg);
-
         client.subCodes = codes;
         returnSimpleQuotes(client.subCodes, reqId); 
     });
 
-    // 客户端追加订阅指定的股票，追加多个股票用“,”逗号分隔
+    /*
+     * 接受客户端订阅指定股票,多个股票用“,”号分隔
+     * 参考结构：[requestId:]600361.SH[,600362.SH]
+     * 方括号内代表非必填，请求msg带有”requestId“时，将会在首次batchMessage中连同一起返回
+     */
     client.on('appendSubscribe', function(msg) {
         let {codes, reqId} = analysisSubsMsg(msg);
         client.subCodes = _(client.subCodes).union(codes).value();
         returnSimpleQuotes(codes, reqId); //返回新订阅的行情
     });
 
+    /**
+     * 解析 subscribe的msg
+     */
     function analysisSubsMsg(msg) {
         var reqId, codes, msgPair, codesStr;
         if (!msg || !msg.trim()) {
@@ -45,12 +54,12 @@ socket.of('/simpleStocks').on('connection', function(client) {
         } else {
             codes = _(msg.split(',')).compact().uniq().value();
         }
-        return {
-            reqId,
-            codes
-        };
+        return {reqId, codes};
     }
 
+    /**
+     * 批量返回
+     */
     function returnSimpleQuotes(codes, reqId) {
         var retMsg = reqId ? (reqId + ':') : '';
 		
@@ -60,7 +69,7 @@ socket.of('/simpleStocks').on('connection', function(client) {
 		client.emit('batchMessage', retMsg.replace(/\|$/, ''));
     }
 
-    	// 取消订阅一些行情
+    // 取消订阅一些行情
 	client.on('unsubcribe', function(msg) {
 		var unSubCodes = _(msg.split(',')).compact().uniq().value();
 		
@@ -86,6 +95,20 @@ socket.of('/simpleStocks').on('connection', function(client) {
 	});
 });
 
+/**
+ * 获取nsp下的connected client的个数
+ */
+function getNspConnectedLength(nsp) {
+    return Object.keys(getNspConnectedClientsObj(nsp)).length;
+}
+
+/**
+ * 获取nsp下的connected 的clients连接对象
+ */
+function getNspConnectedClientsObj(nsp) {
+    return socket.nsps[nsp].clients().connected;
+}
+
 var socketServer = {
     // 初始化行情
     initQuote: function(allQuote) {
@@ -96,12 +119,12 @@ var socketServer = {
     pushQuote: function(code, price) {
         stocksInfo.simpleQuotes[code] = price;
 
-        var clients = socket.nsps['/simpleStocks'].clients().connected;
+        var clients = getNspConnectedClientsObj('/simpleStocks');
 
         if (Object.keys(clients).length > 0) {
             setTimeout(() => {
                 for (var sid in clients) {
-                    if (clients[sid].subCodes.indexOf(code) > -1) {
+                    if (clients[sid].subscribeAll || clients[sid].subCodes.indexOf(code) > -1) {
                         clients[sid].emit('message', code + ',' + price);
                     }
                 }

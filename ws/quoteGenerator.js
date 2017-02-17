@@ -6,7 +6,7 @@ var allCodes = Object.keys(allStockData);
 var codesLen = allCodes.length;
 
 var initAllQuote = allCodes.reduce((accumulator, code) => {
-    accumulator[code] = _.ceil(_.random(5, 100, true), 2); // 生成 5-100 的浮点数字作为价格
+    accumulator[code] = _.ceil(_.random(5, 100, true), 2); // 生成 5-100 的浮点数字、并格式化为两位小数作为价格
     return accumulator;
 }, {});
 
