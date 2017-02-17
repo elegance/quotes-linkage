@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>列表渲染-v-for</title>
+</head>
+<body>
+    <pre>
+        打开控制台输入以下代码，分别回车观察：
+        // code 1 替换一个元素 ，整个列表会重新渲染
+        rs.items.splice(0, 1, {id: 1, value: 'value1-new1'});
+
+        // code 2 加入一个新的元素，整个列表会重新渲染
+        rs.items.push({id: 5, value: 'value5'});
+
+        // code 2 反转重新渲染，可以理解
+        rs.items.reverse();
+    </pre>
+    <div id="keyExample">
+        <div v-for="(item, index) of items" :key="item.id">
+            {{item.id}} -- {{item.value}} -- {{index}} -- {{new Date().getTime()}}
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script>
+        window.rs = new Vue({
+            el: '#keyExample',
+            data: {
+                items: [
+                    {id: 1, value: 'value1'},
+                    {id: 2, value: 'value2'},
+                    {id: 3, value: 'value3'},
+                    {id: 4, value: 'value4'}
+                ]
+            }
+        });
+    </script>
+</body>
+</html>

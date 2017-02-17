@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>react-列表渲染</title>
+    <script src="http://cdn.bootcss.com/react/15.3.1/react.min.js"></script>
+    <script src="http://cdn.bootcss.com/react/15.3.1/react-dom.min.js"></script>
+    <script src="http://cdn.bootcss.com/babel-core/5.8.38/browser.min.js"></script>
+</head>
+<body>
+    <pre>
+        打开控制别输入以下代码，分别回车观察：
+        // code 1
+        rs.setState({items: [
+                    {id: 1, value: 'value1'},
+                    {id: 3, value: 'value3'},
+		            {id: 2, value: 'value2'},
+                    {id: 4, value: 'value4'}
+        ]});
+
+        // code 2
+        rs.setState({data: rs.state.items.reverse()});
+    </pre>
+    <div id="example"></div>   
+    <script type="text/babel">
+
+    var RepeatArr = React.createClass({
+        render: function () {
+            return <div>
+                {
+                    this.state.items.map((item, index) => {
+                        return <div>{index} -- {item.value} -- {item.id}  -- {new Date().getTime()}</div>
+                    })  
+                }
+            </div>
+        },
+        getInitialState: function () {
+            return {
+                items: [
+                    {id: 1, value: 'value1'},
+                    {id: 2, value: 'value2'},
+                    {id: 3, value: 'value3'},
+                    {id: 4, value: 'value4'}
+                ]
+            };
+        }
+    });
+
+    window.rs = ReactDOM.render(
+        <RepeatArr />,
+        document.getElementById('example')
+    );
+    </script>
+</body>
+</html>

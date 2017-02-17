@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KO 变量数组输出</title>
+</head>
+
+<body>
+    <pre>
+        打开控制台输入以下代码，分别回车观察：
+        // code 1 替换一个元素 ，部分重新渲染
+        rs.items.splice(0, 1, {id: 1, value: 'value1-new1'});
+
+        // code 2 新增部分渲染
+        rs.items.push({id: 5, value: 'value5'});
+
+        // code 3， 整个重新渲染
+        rs.items.reverse();
+    </pre>
+    <div data-bind="foreach: items">
+        <div data-bind="text: value"></div>
+    </div>
+    <script src="https://cdn.bootcss.com/knockout/3.4.1/knockout-min.js"></script>
+
+    <script type="text/javascript">
+        function AppViewModel() {
+            var self = this;
+            self.items = ko.observableArray([
+                {id: 1, value: 'value1'},
+                {id: 2, value: 'value2'},
+                {id: 3, value: 'value3'},
+                {id: 4, value: 'value4'}
+            ]);
+        }
+        window.rs = new AppViewModel();
+
+        ko.applyBindings(rs);
+    </script>
+</body>
+
+</html>
