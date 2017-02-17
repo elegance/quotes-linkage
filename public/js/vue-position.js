@@ -4,7 +4,7 @@ requirejs.config({
         'axios': 'https://cdn.bootcss.com/axios/0.15.3/axios.min',
         'socket.io': 'https://cdn.bootcss.com/socket.io/1.7.2/socket.io.min',
         'lodash': 'https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min',
-        'simpleQuote': '/javascripts/simpleQuote'
+        'simpleQuote': '/js/simpleQuote'
     }
 });
 

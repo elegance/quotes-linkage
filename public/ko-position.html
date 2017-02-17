@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>knockout 持仓列表展示</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <table id="tb-ko-position">
+        <thead>
+            <tr>
+                <td class="tc" style="width: 5%;">
+                    <label>
+                        <input class="all" id="selectAll" type="checkbox" placeholder="">
+                        <span>全选</span>
+                    </label>
+                </td>
+                <td class="tc" style="width: 126px">
+                    开仓时间
+                </td>
+                <td class="tc">
+                    资金账户
+                </td>
+                <td class="tc">
+                    股票代码
+                </td>
+                <td class="tr">
+                    股票名称
+                </td>
+                <td class="tr">
+                    股票数量
+                </td>
+                <td class="tr">
+                    成本价
+                </td>
+                <td class="tr">
+                    当前价
+                </td>
+                <td class="tr">
+                    市值
+                </td>
+                <td class="tr">
+                    持仓盈亏
+                </td>
+                <td class="tc">
+                    操作
+                </td>
+            </tr>
+        </thead>
+        <tbody id="selHoldBody" data-bind="template: {name: 'selHoldBodyTpl', foreach: datas}">
+        </tbody>
+        <script type="text/html" id="selHoldBodyTpl">
+            <tr class="add-data">
+                <td class="tc">
+                    <input class="check_2 c-1" type="checkbox" name="ckHold" data-bind="attr: {'data-holdid': id}">
+                </td>
+                <!--开仓时间-->
+                <td class="tc" data-bind="text: createtime">
+                </td>
+                <!--资金账户-->
+                <td class="tc" data-bind="text: accountid">
+                </td>
+                <!--股票代码-->
+                <td class="tc" data-bind="text: code">
+                </td>
+                <!--股票名称-->
+                <td class="tr" data-bind="text: code">
+                </td>
+                <!--股票数量-->
+                <td class="tr" data-bind="text: position">
+                </td>
+                <!--成本价-->
+                <td class="tr" data-bind="text: openprice">
+                </td>
+                <!--当前价-->
+                <td class="tr" data-bind="text: price()">
+                </td>
+                <!--市值-->
+                <td class="tr" data-bind="text: positionPrice()">
+                </td>
+                <!--持仓盈亏-->
+                <td class="tr">
+                </td>
+                <!--平仓-->
+                <td>
+                    <button class="sell-out-holding-future" data-bind="attr: {'data-id': id}" disabled>
+                        平仓
+                    </button>
+                </td>
+            </tr>
+        </script>
+    </table>
+    <script data-main="/js/ko-position" src="https://cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
+</body>
+</html>

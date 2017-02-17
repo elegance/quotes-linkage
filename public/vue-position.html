@@ -4,36 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>vue-持仓列表-行情变动</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            border-spacing: 0;
-            line-height: 30px;
-            margin-top: 10px;
-            width: 100%;
-            font-size: 12px;
-            border: 1px solid #e2e2e2;
-            box-sizing: border-box;
-        }
-        
-        thead {
-            background-color: #f2f2f2;
-        }
-        
-        td {
-            text-align: left;
-            font-weight: 400;
-            vertical-align: middle;
-        }
-        
-        .tc {
-            text-align: center;
-        }
-        
-        .prs {
-            padding-right: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
@@ -73,9 +44,6 @@
                     </td>
                     <td class="tr">
                         持仓盈亏
-                    </td>
-                    <td class="tr prs">
-                        盈亏比
                     </td>
                     <td class="tc">
                         操作
@@ -123,10 +91,6 @@
                     <td class="tr">
                         computed 盈亏
                     </td>
-                    <!--盈亏比-->
-                    <td class="tr">
-                        computed 盈亏比
-                    </td>
                     <!--平仓-->
                     <td>
                         <button class="sell-out-holding-future">
@@ -137,7 +101,7 @@
             </tbody>
         </table>
     </div>
-    <script data-main="/javascripts/vue-position" src="https://cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
+    <script data-main="/js/vue-position" src="https://cdn.bootcss.com/require.js/2.3.2/require.min.js"></script>
 </body>
 
 </html>
