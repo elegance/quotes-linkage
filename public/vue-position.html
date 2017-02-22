@@ -42,9 +42,6 @@
                     <td class="tr">
                         市值
                     </td>
-                    <td class="tr">
-                        持仓盈亏
-                    </td>
                     <td class="tc">
                         操作
                     </td>
@@ -65,7 +62,7 @@
                     </td>
                     <!--股票代码-->
                     <td class="tc">
-                        {{item.code}}
+                        {{item.name}}
                     </td>
                     <!--股票名称-->
                     <td class="tr">
@@ -86,10 +83,6 @@
                     <!--市值-->
                     <td class="tr">
                         {{positionPrice(item)}}
-                    </td>
-                    <!--持仓盈亏-->
-                    <td class="tr">
-                        computed 盈亏
                     </td>
                     <!--平仓-->
                     <td>
